@@ -63,9 +63,10 @@ xmpp.connect({
 
 
 function webhookMessage(req, res, next) {
+    console.log('got incoming message, sending it to ' + req.params.to);
     //req.params.hash
     var muc = false;
-    if(req.params.ismuc === 'true')
+    if(req.params.type === 'group')
     {
         muc = true;
     }
