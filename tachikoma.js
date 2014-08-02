@@ -4,8 +4,6 @@ var config = require('./config');
 xmpp.on('online', function(data) {
     //console.log('Connected with JID: ' + data.jid.user);
     console.log('Yes, I\'m connected!');
-    xmpp.join(config.xmpp.channel);
-    xmpp.send(config.xmpp.channel, 'AI satellite is operational.', true);
 });
 
 xmpp.on('chat', function(from, message) {
@@ -23,8 +21,7 @@ xmpp.on('subscribe', function(from) {
 });
 
 xmpp.on('groupchat', function(conference, from, message, stamp) {
-    if(message === '!test')
-    {
+    if (message === '!test') {
         xmpp.send(conference, 'AI satellite is operational.', true);
     }
     //console.log('%s says %s on %s on %s at %s', from, message, conference, stamp.substr(0,9), stamp.substr(10));
@@ -40,3 +37,6 @@ xmpp.connect({
 //xmpp.subscribe('your.friend@gmail.com');
 // check for incoming subscription requests
 //xmpp.getRoster();
+
+xmpp.join(config.xmpp.channel);
+xmpp.send(config.xmpp.channel, 'AI satellite is operational.', true);
