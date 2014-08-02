@@ -5,7 +5,13 @@ var activationdelaytimer;
 
 xmpp.on('online', function(data) {
     //console.log('Connected with JID: ' + data.jid.user);
-    console.log('Yes, I\'m connected!');
+    console.log('I\'m connected!');
+
+    for (var i = config.xmpp.channels.length - 1; i >= 0; i--) {
+        activationdelaytimer = Date.now()    
+        xmpp.join(config.xmpp.channels[i]);
+    };
+
 });
 
 xmpp.on('chat', function(from, message) {
@@ -43,9 +49,3 @@ xmpp.connect({
 //xmpp.subscribe('your.friend@gmail.com');
 // check for incoming subscription requests
 //xmpp.getRoster();
-
-activationdelaytimer = Date.now()
-xmpp.join(config.xmpp.channel);
-
-
-xmpp.send(config.xmpp.channel, 'AI satellite is operational.', true);
