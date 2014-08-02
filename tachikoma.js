@@ -1,4 +1,5 @@
 var xmpp = require('simple-xmpp');
+var manual = require('node-xmpp');
 var config = require('./config');
 
 xmpp.on('online', function(data) {
@@ -38,5 +39,18 @@ xmpp.connect({
 // check for incoming subscription requests
 //xmpp.getRoster();
 
-xmpp.join(config.xmpp.channel);
+//xmpp.join(config.xmpp.channel);
+var stanza = new manual.Element('presence', 
+    { 
+        "to": to
+    }).c('x', 
+    {
+        xmlns: 'http://jabber.org/protocol/muc'
+    }).c('history', 
+    {
+        maxstanzas: 0,
+        seconds: 1
+    });
+manual.conn.send(stanza);
+
 xmpp.send(config.xmpp.channel, 'AI satellite is operational.', true);
