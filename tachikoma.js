@@ -2,7 +2,7 @@ var xmpp = require('simple-xmpp');
 var config = require('./config');
 
 xmpp.on('online', function(data) {
-    console.log('Connected with JID: ' + data.jid.user);
+    //console.log('Connected with JID: ' + data.jid.user);
     console.log('Yes, I\'m connected!');
 });
 
