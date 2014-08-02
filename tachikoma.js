@@ -1,23 +1,36 @@
 var xmpp = require('simple-xmpp');
+var restify = require('restify');
 var config = require('./config');
+
+
+var server = restify.createServer();
+server.use(restify.bodyParser());
+server.use(restify.queryParser());
+server.use(restify.jsonp());
+server.use(restify.CORS());
+server.use(restify.fullResponse());
 
 var activationdelaytimer;
 
+
+//Initiate bot after it comes online
 xmpp.on('online', function(data) {
     //console.log('Connected with JID: ' + data.jid.user);
     console.log('I\'m connected!');
 
     for (var i = config.xmpp.channels.length - 1; i >= 0; i--) {
-        activationdelaytimer = Date.now()    
+        activationdelaytimer = Date.now();
         xmpp.join(config.xmpp.channels[i]);
     };
 
 });
 
+//Echo chat messages
 xmpp.on('chat', function(from, message) {
     xmpp.send(from, 'echo: ' + message);
 });
 
+//Process errors
 xmpp.on('error', function(err) {
     console.error(err);
 });
@@ -28,6 +41,8 @@ xmpp.on('subscribe', function(from) {
     }
 });
 
+
+//Process groupchat messages
 xmpp.on('groupchat', function(conference, from, message, stamp) {
     if (activationdelaytimer > Date.now()-5000 ) {
         //ignore old messages in chat log
@@ -36,9 +51,9 @@ xmpp.on('groupchat', function(conference, from, message, stamp) {
             xmpp.send(conference, 'Group chat operational', true);
         }
     }
-    //console.log('%s says %s on %s on %s at %s', from, message, conference, stamp.substr(0,9), stamp.substr(10));
 });
 
+//Connect to server
 xmpp.connect({
     jid: config.xmpp.jid,
     password: config.xmpp.password,
@@ -46,6 +61,32 @@ xmpp.connect({
     port: config.xmpp.port
 });
 
-//xmpp.subscribe('your.friend@gmail.com');
-// check for incoming subscription requests
-//xmpp.getRoster();
+
+function webhookMessage(req, res, next) {
+    //req.params.hash
+    var muc = false;
+    if(req.params.ismuc === 'true')
+    {
+        muc = true;
+    }
+
+    xmpp.send(req.params.to, req.params.msg, muc);
+}
+
+function main(req, res, next) {
+    res.send(200, 'Operational');
+}
+
+function stats(req, res, next) {
+    res.send(403, 'DENIED');
+}
+
+
+//Set up the webhook
+server.get('/tachi/', main);
+server.get('/tachi/stats', stats);
+server.post('/tachi/message', webhookMessage);
+
+server.listen(config.web.port, function() {
+    console.log('%s listening at %s', server.name, server.url);
+});
