@@ -41,7 +41,7 @@ xmpp.connect({
 //xmpp.join(config.xmpp.channel);
 var stanza = new xmpp.Element('presence', 
     { 
-        "to": to
+        "to": config.xmpp.channel
     }).c('x', 
     {
         xmlns: 'http://jabber.org/protocol/muc'
