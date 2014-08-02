@@ -1,8 +1,7 @@
 var xmpp = require('simple-xmpp');
 var config = require('./config');
 
-var oldmessages;
-var oldmessagetimer;
+var activationdelaytimer;
 
 xmpp.on('online', function(data) {
     //console.log('Connected with JID: ' + data.jid.user);
@@ -24,8 +23,7 @@ xmpp.on('subscribe', function(from) {
 });
 
 xmpp.on('groupchat', function(conference, from, message, stamp) {
-    if (oldmessages < 25 || oldmessagetimer < Date.now()-5000 ) {
-        oldmessages = oldmessages + 1;
+    if (activationdelaytimer > Date.now()-5000 ) {
         //ignore old messages in chat log
     } else {
         if (message === '!test') {
@@ -46,7 +44,7 @@ xmpp.connect({
 // check for incoming subscription requests
 //xmpp.getRoster();
 
-oldmessagetimer = Date.now()
+activationdelaytimer = Date.now()
 xmpp.join(config.xmpp.channel);
 
 
