@@ -25,6 +25,10 @@ xmpp.on('online', function(data) {
 
 });
 
+xmpp.on('close', function() {
+    return new Error("Disconnected. Throwing an error to force restart.");
+});
+
 //Echo chat messages
 xmpp.on('chat', function(from, message) {
     xmpp.send(from, 'echo: ' + message);
