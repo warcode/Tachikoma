@@ -1,8 +1,10 @@
 "use strict";
-require('url');
+var url = require('url');
 var xmpp = require('simple-xmpp');
 var restify = require('restify');
 var stringjs = require('string');
+var querystring = require('querystring');
+var http = require('http');
 var config = require('./config');
 
 
@@ -49,7 +51,7 @@ function removeChatCallback(req, res, next) {
     }
 }
 
-function callExternalWebhook(url, keyword, caller, data) {
+function callExternalWebhook(uri, keyword, caller, data) {
 
     var post_data = querystring.stringify({
         'data': data,
@@ -57,7 +59,7 @@ function callExternalWebhook(url, keyword, caller, data) {
         'keyword': keyword
     });
 
-    var u = url.parse(url);
+    var u = url.parse(uri);
     var options = {
         hostname: u.hostname,
         port: u.port,
