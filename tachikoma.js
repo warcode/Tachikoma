@@ -24,6 +24,9 @@ function registerChatCallback(req, res, next) {
 
     console.log('got incoming callback request for keyword ' + keyword);
 
+    if(keyword.length < 3) {
+        res.send(403, 'Keyword must be at least 3 chars');
+    }
 
     if (callbackKeywords[keyword]) {
         res.send(403, 'Already Exists');
