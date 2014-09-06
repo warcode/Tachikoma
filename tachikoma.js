@@ -137,7 +137,7 @@ xmpp.on('groupchat', function (conference, from, message, stamp) {
         if (message === '!test') {
             xmpp.send(conference, 'Group chat operational', true);
         }
-        callbackKeywordEvent(message, sender);
+        callbackKeywordEvent(message, from);
     }
 });
 
