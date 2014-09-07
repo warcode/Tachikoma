@@ -78,6 +78,7 @@ function callExternalWebhook(uri, keyword, caller, data) {
 
     req.on('error', function (e) {
         console.log('problem with performing callback : ' + e.message);
+        callbackKeywords[keyword] = null;
     });
 
 
@@ -117,6 +118,7 @@ xmpp.on('close', function () {
 //Echo chat messages
 xmpp.on('chat', function (from, message) {
     xmpp.send(from, 'echo: ' + message);
+    callbackKeywordEvent(message, from);
 });
 
 //Process errors
